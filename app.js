@@ -62,7 +62,7 @@ function renderHistory() {
   if (recentDraws.length === 0) {
     const empty = document.createElement("div");
     empty.className = "history-item";
-    empty.textContent = "아직 추첨 기록이 없어요.";
+    empty.textContent = "No draws yet.";
     historyList.appendChild(empty);
     return;
   }
@@ -101,7 +101,7 @@ function renderOfficialHistory() {
   if (officialDraws.length === 0) {
     const empty = document.createElement("div");
     empty.className = "history-item";
-    empty.textContent = "공식 회차 데이터를 불러오지 못했어요.";
+    empty.textContent = "Could not load official round data.";
     officialList.appendChild(empty);
     return;
   }
@@ -147,7 +147,7 @@ function setRollingState(isRolling) {
   drawButton.disabled = isRolling;
   resetButton.disabled = isRolling;
   machine.classList.toggle("is-rolling", isRolling);
-  statusText.textContent = isRolling ? "추첨 중..." : "대기 중";
+  statusText.textContent = isRolling ? "Drawing..." : "Idle";
 }
 
 function startDraw() {
@@ -162,7 +162,7 @@ function startDraw() {
   }
 
   setRollingState(true);
-  statusText.textContent = "공이 섞이는 중...";
+  statusText.textContent = "Mixing balls...";
   mainBalls.innerHTML = "";
   bonusBall.textContent = "!";
 
@@ -183,7 +183,7 @@ function startDraw() {
         recentDraws.unshift(result);
         recentDraws.splice(5);
         renderHistory();
-        statusText.textContent = "추첨 완료";
+        statusText.textContent = "Draw complete";
         setRollingState(false);
         drawTimer = null;
       }, 400);
@@ -202,7 +202,7 @@ function resetMachine() {
     drawTimer = null;
   }
   setRollingState(false);
-  statusText.textContent = "대기 중";
+  statusText.textContent = "Idle";
   renderPlaceholder();
   recentDraws.length = 0;
   renderHistory();

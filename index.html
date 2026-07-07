@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>로또 추첨기</title>
+    <title>Lotto Draw Machine</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,22 +17,22 @@
       <section class="app-layout">
         <aside class="sidebar">
           <p class="eyebrow">Korean Lotto 6/45</p>
-          <h1>로또 추첨기</h1>
+          <h1>Lotto Draw Machine</h1>
           <p class="lead">
-            어두운 스테이지 위에서 번호가 뽑히는 느낌으로 구성한 Spotify 스타일 로또 추첨기예요.
+            A Spotify-inspired lotto drawer that feels like numbers are being picked on a dark stage.
           </p>
 
-          <div class="stat-grid" aria-label="요약 정보">
+          <div class="stat-grid" aria-label="Summary">
             <div class="stat-card">
-              <span class="stat-label">주 번호</span>
-              <strong>6개</strong>
+              <span class="stat-label">Main Numbers</span>
+              <strong>6</strong>
             </div>
             <div class="stat-card">
-              <span class="stat-label">보너스</span>
-              <strong>1개</strong>
+              <span class="stat-label">Bonus</span>
+              <strong>1</strong>
             </div>
             <div class="stat-card">
-              <span class="stat-label">범위</span>
+              <span class="stat-label">Range</span>
               <strong>1 - 45</strong>
             </div>
           </div>
@@ -42,45 +42,45 @@
           <header class="stage-top">
             <div class="machine-top" aria-live="polite">
               <span class="status-dot"></span>
-              <span id="statusText">대기 중</span>
+              <span id="statusText">Idle</span>
             </div>
             <p class="stage-caption">Random draw · no duplicate numbers</p>
           </header>
 
           <div class="machine">
             <div class="result-card">
-              <div class="ball-row" id="mainBalls" aria-label="주 번호 결과"></div>
+              <div class="ball-row" id="mainBalls" aria-label="Main number results"></div>
 
               <div class="bonus-row">
-                <span class="bonus-label">보너스</span>
+                <span class="bonus-label">Bonus</span>
                 <div class="bonus-ball" id="bonusBall">?</div>
               </div>
             </div>
 
             <div class="controls">
               <button id="drawButton" class="primary-button" type="button">
-                추첨 시작
+                Draw
               </button>
               <button id="resetButton" class="secondary-button" type="button">
-                초기화
+                Reset
               </button>
             </div>
 
-            <p class="hint">매번 새로 추첨되며, 같은 번호는 중복되지 않아요.</p>
+            <p class="hint">Each draw is fresh, and no number will repeat.</p>
           </div>
 
-          <section class="history-panel" aria-label="최근 추첨 기록">
+          <section class="history-panel" aria-label="Recent draws">
             <div class="history-head">
-              <h2>최근 추첨</h2>
+              <h2>Recent Draws</h2>
               <span>LAST 5</span>
             </div>
             <div id="historyList" class="history-list"></div>
           </section>
 
-          <section class="history-panel official-panel" aria-label="역대 로또 번호">
+          <section class="history-panel official-panel" aria-label="Historical lotto numbers">
             <div class="history-head">
-              <h2>역대 로또 번호</h2>
-              <span id="officialStatus">최근 5개 회차</span>
+              <h2>Historical Numbers</h2>
+              <span id="officialStatus">Latest 5 rounds</span>
             </div>
             <div id="officialList" class="history-list"></div>
           </section>
