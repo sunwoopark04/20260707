@@ -77,12 +77,21 @@ button {
   height: 64px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
   padding: 0 24px;
   background: rgba(250, 249, 245, 0.88);
   backdrop-filter: blur(18px);
   border-bottom: 1px solid rgba(230, 223, 216, 0.8);
+}
+
+.nav-actions {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .brand-lockup {
@@ -126,12 +135,6 @@ button {
   font-size: 0.72rem;
   letter-spacing: 1.4px;
   text-transform: uppercase;
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .app-shell {
