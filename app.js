@@ -1,0 +1,216 @@
+const drawButton = document.getElementById("drawButton");
+const resetButton = document.getElementById("resetButton");
+const mainBalls = document.getElementById("mainBalls");
+const bonusBall = document.getElementById("bonusBall");
+const statusText = document.getElementById("statusText");
+const machine = document.querySelector(".machine");
+const historyList = document.getElementById("historyList");
+const officialList = document.getElementById("officialList");
+const officialStatus = document.getElementById("officialStatus");
+
+let drawTimer = null;
+let flickerTimer = null;
+const recentDraws = [];
+const officialDraws = [
+  { round: 1231, date: "2026-07-04", main: [4, 13, 14, 18, 31, 38], bonus: 15 },
+  { round: 1230, date: "2026-06-27", main: [3, 8, 9, 22, 28, 42], bonus: 45 },
+  { round: 1229, date: "2026-06-20", main: [12, 13, 29, 34, 37, 42], bonus: 16 },
+  { round: 1228, date: "2026-06-13", main: [24, 29, 30, 31, 35, 44], bonus: 1 },
+  { round: 1227, date: "2026-06-06", main: [1, 14, 16, 34, 41, 44], bonus: 13 },
+];
+
+function pickNumbers() {
+  const numbers = Array.from({ length: 45 }, (_, index) => index + 1);
+  for (let i = numbers.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+  }
+
+  const main = numbers.slice(0, 6).sort((a, b) => a - b);
+  const bonus = numbers[6];
+  return { main, bonus };
+}
+
+function renderPlaceholder() {
+  mainBalls.innerHTML = "";
+  for (let i = 0; i < 6; i += 1) {
+    const placeholder = document.createElement("div");
+    placeholder.className = "ball";
+    placeholder.textContent = "?";
+    mainBalls.appendChild(placeholder);
+  }
+  bonusBall.textContent = "?";
+}
+
+function renderResult(main, bonus) {
+  mainBalls.innerHTML = "";
+  main.forEach((number, index) => {
+    const ball = document.createElement("div");
+    ball.className = "ball";
+    if (index < 3) {
+      ball.classList.add("is-active");
+    }
+    ball.textContent = number;
+    mainBalls.appendChild(ball);
+  });
+  bonusBall.textContent = bonus;
+}
+
+function renderHistory() {
+  historyList.innerHTML = "";
+
+  if (recentDraws.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "history-item";
+    empty.textContent = "아직 추첨 기록이 없어요.";
+    historyList.appendChild(empty);
+    return;
+  }
+
+  recentDraws.forEach((draw, index) => {
+    const item = document.createElement("div");
+    item.className = "history-item";
+
+    const order = document.createElement("span");
+    order.className = "history-index";
+    order.textContent = String(index + 1);
+
+    const balls = document.createElement("div");
+    balls.className = "history-balls";
+
+    draw.main.forEach((number) => {
+      const badge = document.createElement("span");
+      badge.className = "history-badge";
+      badge.textContent = number;
+      balls.appendChild(badge);
+    });
+
+    const bonus = document.createElement("span");
+    bonus.className = "history-badge bonus";
+    bonus.textContent = `+ ${draw.bonus}`;
+    balls.appendChild(bonus);
+
+    item.append(order, balls);
+    historyList.appendChild(item);
+  });
+}
+
+function renderOfficialHistory() {
+  officialList.innerHTML = "";
+
+  if (officialDraws.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "history-item";
+    empty.textContent = "공식 회차 데이터를 불러오지 못했어요.";
+    officialList.appendChild(empty);
+    return;
+  }
+
+  officialDraws.forEach((draw) => {
+    const item = document.createElement("div");
+    item.className = "history-item";
+
+    const meta = document.createElement("div");
+    meta.className = "history-meta";
+
+    const order = document.createElement("span");
+    order.className = "history-index";
+    order.textContent = `${draw.round}`;
+
+    const date = document.createElement("span");
+    date.className = "history-date";
+    date.textContent = draw.date;
+
+    meta.append(order, date);
+
+    const balls = document.createElement("div");
+    balls.className = "history-balls";
+
+    draw.main.forEach((number) => {
+      const badge = document.createElement("span");
+      badge.className = "history-badge";
+      badge.textContent = number;
+      balls.appendChild(badge);
+    });
+
+    const bonus = document.createElement("span");
+    bonus.className = "history-badge bonus";
+    bonus.textContent = `+ ${draw.bonus}`;
+    balls.appendChild(bonus);
+
+    item.append(meta, balls);
+    officialList.appendChild(item);
+  });
+}
+
+function setRollingState(isRolling) {
+  drawButton.disabled = isRolling;
+  resetButton.disabled = isRolling;
+  machine.classList.toggle("is-rolling", isRolling);
+  statusText.textContent = isRolling ? "추첨 중..." : "대기 중";
+}
+
+function startDraw() {
+  if (flickerTimer) {
+    clearInterval(flickerTimer);
+    flickerTimer = null;
+  }
+
+  if (drawTimer) {
+    clearTimeout(drawTimer);
+    drawTimer = null;
+  }
+
+  setRollingState(true);
+  statusText.textContent = "공이 섞이는 중...";
+  mainBalls.innerHTML = "";
+  bonusBall.textContent = "!";
+
+  const flickerCount = 10;
+  let count = 0;
+
+  flickerTimer = setInterval(() => {
+    const preview = pickNumbers();
+    renderResult(preview.main, preview.bonus);
+    count += 1;
+
+    if (count >= flickerCount) {
+      clearInterval(flickerTimer);
+      flickerTimer = null;
+      const result = pickNumbers();
+      drawTimer = setTimeout(() => {
+        renderResult(result.main, result.bonus);
+        recentDraws.unshift(result);
+        recentDraws.splice(5);
+        renderHistory();
+        statusText.textContent = "추첨 완료";
+        setRollingState(false);
+        drawTimer = null;
+      }, 400);
+    }
+  }, 90);
+}
+
+function resetMachine() {
+  if (flickerTimer) {
+    clearInterval(flickerTimer);
+    flickerTimer = null;
+  }
+
+  if (drawTimer) {
+    clearTimeout(drawTimer);
+    drawTimer = null;
+  }
+  setRollingState(false);
+  statusText.textContent = "대기 중";
+  renderPlaceholder();
+  recentDraws.length = 0;
+  renderHistory();
+}
+
+drawButton.addEventListener("click", startDraw);
+resetButton.addEventListener("click", resetMachine);
+
+renderPlaceholder();
+renderHistory();
+renderOfficialHistory();

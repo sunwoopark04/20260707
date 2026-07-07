@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>로또 추첨기</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="app-layout">
+        <aside class="sidebar">
+          <p class="eyebrow">Korean Lotto 6/45</p>
+          <h1>로또 추첨기</h1>
+          <p class="lead">
+            어두운 스테이지 위에서 번호가 뽑히는 느낌으로 구성한 Spotify 스타일 로또 추첨기예요.
+          </p>
+
+          <div class="stat-grid" aria-label="요약 정보">
+            <div class="stat-card">
+              <span class="stat-label">주 번호</span>
+              <strong>6개</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">보너스</span>
+              <strong>1개</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">범위</span>
+              <strong>1 - 45</strong>
+            </div>
+          </div>
+        </aside>
+
+        <section class="stage">
+          <header class="stage-top">
+            <div class="machine-top" aria-live="polite">
+              <span class="status-dot"></span>
+              <span id="statusText">대기 중</span>
+            </div>
+            <p class="stage-caption">Random draw · no duplicate numbers</p>
+          </header>
+
+          <div class="machine">
+            <div class="result-card">
+              <div class="ball-row" id="mainBalls" aria-label="주 번호 결과"></div>
+
+              <div class="bonus-row">
+                <span class="bonus-label">보너스</span>
+                <div class="bonus-ball" id="bonusBall">?</div>
+              </div>
+            </div>
+
+            <div class="controls">
+              <button id="drawButton" class="primary-button" type="button">
+                추첨 시작
+              </button>
+              <button id="resetButton" class="secondary-button" type="button">
+                초기화
+              </button>
+            </div>
+
+            <p class="hint">매번 새로 추첨되며, 같은 번호는 중복되지 않아요.</p>
+          </div>
+
+          <section class="history-panel" aria-label="최근 추첨 기록">
+            <div class="history-head">
+              <h2>최근 추첨</h2>
+              <span>LAST 5</span>
+            </div>
+            <div id="historyList" class="history-list"></div>
+          </section>
+
+          <section class="history-panel official-panel" aria-label="역대 로또 번호">
+            <div class="history-head">
+              <h2>역대 로또 번호</h2>
+              <span id="officialStatus">최근 5개 회차</span>
+            </div>
+            <div id="officialList" class="history-list"></div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
