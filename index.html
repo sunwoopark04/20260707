@@ -7,19 +7,38 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
+    <header class="top-nav">
+      <div class="brand-lockup">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" aria-label="Anthropic-style mark">
+            <path d="M12 2.4 20.2 20h-2.6l-2-4.2H8.4L6.4 20H3.8L12 2.4Zm0 5.6-2.2 4.7h4.4L12 8Z" />
+          </svg>
+        </span>
+        <div class="brand-copy">
+          <span class="brand-name">Lotto Draw</span>
+          <span class="brand-subtitle">Editorial number generator</span>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button id="drawButton" class="primary-button" type="button">Draw</button>
+        <button id="resetButton" class="secondary-button" type="button">Reset</button>
+      </div>
+    </header>
+
     <main class="app-shell">
-      <section class="app-layout">
-        <aside class="sidebar">
+      <section class="hero-band">
+        <div class="hero-copy">
           <p class="eyebrow">Korean Lotto 6/45</p>
           <h1>Lotto Draw Machine</h1>
           <p class="lead">
-            A Spotify-inspired lotto drawer that feels like numbers are being picked on a dark stage.
+            A warm editorial lotto experience with a cream canvas, coral CTA, and a dark product surface for the draw.
           </p>
 
           <div class="stat-grid" aria-label="Summary">
@@ -36,18 +55,15 @@
               <strong>1 - 45</strong>
             </div>
           </div>
-        </aside>
+        </div>
 
-        <section class="stage">
-          <header class="stage-top">
-            <div class="machine-top" aria-live="polite">
+        <div class="hero-visual">
+          <div class="machine" aria-live="polite">
+            <div class="machine-top">
               <span class="status-dot"></span>
               <span id="statusText">Idle</span>
             </div>
-            <p class="stage-caption">Random draw · no duplicate numbers</p>
-          </header>
 
-          <div class="machine">
             <div class="result-card">
               <div class="ball-row" id="mainBalls" aria-label="Main number results"></div>
 
@@ -57,33 +73,26 @@
               </div>
             </div>
 
-            <div class="controls">
-              <button id="drawButton" class="primary-button" type="button">
-                Draw
-              </button>
-              <button id="resetButton" class="secondary-button" type="button">
-                Reset
-              </button>
-            </div>
-
             <p class="hint">Each draw is fresh, and no number will repeat.</p>
           </div>
+        </div>
+      </section>
 
-          <section class="history-panel" aria-label="Recent draws">
-            <div class="history-head">
-              <h2>Recent Draws</h2>
-              <span>LAST 5</span>
-            </div>
-            <div id="historyList" class="history-list"></div>
-          </section>
+      <section class="content-grid">
+        <section class="history-panel" aria-label="Recent draws">
+          <div class="history-head">
+            <h2>Recent Draws</h2>
+            <span>LAST 5</span>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </section>
 
-          <section class="history-panel official-panel" aria-label="Historical lotto numbers">
-            <div class="history-head">
-              <h2>Historical Numbers</h2>
-              <span id="officialStatus">Latest 5 rounds</span>
-            </div>
-            <div id="officialList" class="history-list"></div>
-          </section>
+        <section class="history-panel official-panel" aria-label="Historical lotto numbers">
+          <div class="history-head">
+            <h2>Historical Numbers</h2>
+            <span id="officialStatus">Latest 5 rounds</span>
+          </div>
+          <div id="officialList" class="history-list"></div>
         </section>
       </section>
     </main>
