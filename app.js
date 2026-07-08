@@ -16,12 +16,7 @@ const officialStatus = document.getElementById("officialStatus");
 let drawTimer = null;
 let flickerTimer = null;
 const recentDraws = [];
-const createClient = window.supabase?.createClient;
-const supabase = !isPlaceholder(SUPABASE_URL)
-  && !isPlaceholder(SUPABASE_ANON_KEY)
-  && typeof createClient === "function"
-  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-  : null;
+const supabaseReady = !isPlaceholder(SUPABASE_URL) && !isPlaceholder(SUPABASE_ANON_KEY);
 const officialDraws = [
   { round: 1231, date: "2026-07-04", main: [4, 13, 14, 18, 31, 38], bonus: 15 },
   { round: 1230, date: "2026-06-27", main: [3, 8, 9, 22, 28, 42], bonus: 45 },
@@ -31,6 +26,10 @@ const officialDraws = [
 ];
 
 function normalizeDraw(record) {
+  if (!record) {
+    return { main: [], bonus: "", createdAt: "" };
+  }
+
   return {
     main: record.main_numbers ?? record.main ?? [],
     bonus: record.bonus_number ?? record.bonus,
@@ -39,7 +38,7 @@ function normalizeDraw(record) {
 }
 
 async function saveDraw(draw) {
-  if (!supabase) {
+  if (!supabaseReady) {
     return Promise.resolve(null);
   }
 
@@ -49,34 +48,47 @@ async function saveDraw(draw) {
     created_at: new Date().toISOString(),
   };
 
-  const { data, error } = await supabase
-    .from(SUPABASE_TABLE)
-    .insert(payload)
-    .select("main_numbers, bonus_number, created_at")
-    .single();
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify(payload),
+  });
 
-  if (error) {
-    throw error;
+  if (!response.ok) {
+    throw new Error(`Supabase save failed: ${response.status} ${response.statusText}`);
   }
 
-  return normalizeDraw(data);
+  const data = await response.json();
+  return normalizeDraw(Array.isArray(data) ? data[0] : data);
 }
 
 async function loadRecentDraws(limit = 5) {
-  if (!supabase) {
+  if (!supabaseReady) {
     return [];
   }
 
-  const { data, error } = await supabase
-    .from(SUPABASE_TABLE)
-    .select("main_numbers, bonus_number, created_at")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const url = new URL(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`);
+  url.searchParams.set("select", "main_numbers,bonus_number,created_at");
+  url.searchParams.set("order", "created_at.desc");
+  url.searchParams.set("limit", String(limit));
 
-  if (error) {
-    throw error;
+  const response = await fetch(url.toString(), {
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Supabase load failed: ${response.status} ${response.statusText}`);
   }
 
+  const data = await response.json();
   return (data ?? []).map(normalizeDraw);
 }
 
@@ -333,7 +345,7 @@ async function init() {
 
   renderHistory();
 
-  if (!supabase) {
+  if (!supabaseReady) {
     statusText.textContent = "Supabase not configured";
   }
 }
