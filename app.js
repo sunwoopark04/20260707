@@ -53,6 +53,8 @@ async function saveDraw(draw) {
     headers: {
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      "Accept-Profile": "public",
+      "Content-Profile": "public",
       "Content-Type": "application/json",
       Prefer: "return=representation",
     },
@@ -81,6 +83,7 @@ async function loadRecentDraws(limit = 5) {
     headers: {
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      "Accept-Profile": "public",
     },
   });
 
